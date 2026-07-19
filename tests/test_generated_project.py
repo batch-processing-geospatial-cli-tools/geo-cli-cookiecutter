@@ -62,16 +62,20 @@ def installed_project(tmp_path_factory: pytest.TempPathFactory) -> Path:
         use_shapely="yes",
     )
 
-    venv = project / ".venv"
-    run(
-        [UV, "venv", "--python", f"{sys.version_info.major}.{sys.version_info.minor}", str(venv)],
-        project,
-    )
-
+    # Strip the variables that would otherwise redirect uv somewhere else: CI sets
+    # UV_PYTHON to steer the matrix, and this test needs its own environment.
     env = dict(os.environ)
-    env["VIRTUAL_ENV"] = str(venv)
-    env.pop("PYTHONPATH", None)
-    run([UV, "pip", "install", "-e", ".[dev]"], project, env)
+    for name in ("UV_PYTHON", "VIRTUAL_ENV", "PYTHONPATH", "UV_PROJECT_ENVIRONMENT"):
+        env.pop(name, None)
+
+    venv = project / ".venv"
+    interpreter = f"{sys.version_info.major}.{sys.version_info.minor}"
+    run([UV, "venv", "--python", interpreter, str(venv)], project, env)
+    run(
+        [UV, "pip", "install", "--python", str(venv / "bin" / "python"), "-e", ".[dev]"],
+        project,
+        env,
+    )
     return project
 
 

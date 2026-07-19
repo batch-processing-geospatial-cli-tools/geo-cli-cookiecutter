@@ -30,7 +30,7 @@ Or from a clone, which is also how you run the template's own tests:
 ```bash
 git clone https://github.com/batch-processing-geospatial-cli-tools/geo-cli-cookiecutter.git
 cd geo-cli-cookiecutter
-uv sync --extra dev
+uv sync
 uv run cookiecutter . --output-dir ~/projects
 ```
 
@@ -106,7 +106,7 @@ the gap from the other side: it bakes projects and asserts on what comes out.
 ## Testing
 
 ```bash
-uv sync --extra dev
+uv sync
 uv run pytest -m "not slow"   # fast: bakes many permutations, inspects the output
 uv run pytest                 # everything, including the end-to-end install
 ```

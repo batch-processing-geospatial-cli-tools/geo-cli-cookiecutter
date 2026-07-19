@@ -17,6 +17,10 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.11", "3.12", "3.13"]
+    env:
+      # Applies to every uv command below, including `uv run`, which re-syncs the
+      # environment and would otherwise fall back to the default interpreter.
+      UV_PYTHON: {% raw %}${{ matrix.python-version }}{% endraw %}
     steps:
       - uses: actions/checkout@v4
 
@@ -29,16 +33,16 @@ jobs:
         run: uv python install {% raw %}${{ matrix.python-version }}{% endraw %}
 
       - name: Install the project
-        run: uv sync --all-extras --python {% raw %}${{ matrix.python-version }}{% endraw %}
+        run: uv sync --all-extras
 
       - name: Lint
-        run: uv run ruff check .
+        run: uv run --all-extras ruff check .
 
       - name: Check formatting
-        run: uv run ruff format --check .
+        run: uv run --all-extras ruff format --check .
 
       - name: Type check
-        run: uv run mypy
+        run: uv run --all-extras mypy
 
       - name: Test
-        run: uv run pytest --cov --cov-report=term-missing
+        run: uv run --all-extras pytest --cov --cov-report=term-missing

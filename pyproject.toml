@@ -9,10 +9,12 @@ authors = [{ name = "batch-processing.com" }]
 keywords = ["cookiecutter", "template", "cli", "typer", "geospatial", "gis"]
 dependencies = ["cookiecutter>=2.6"]
 
-[project.optional-dependencies]
+[dependency-groups]
+# A dependency group rather than an extra: uv installs it for `uv sync` and `uv run`
+# without any extra flags, which keeps the CI matrix from silently running against a
+# tooling-free environment.
 dev = [
     "pytest>=8.0",
-    "pytest-xdist>=3.6",
     "ruff>=0.6",
     "mypy>=1.11",
 ]
