@@ -1,0 +1,14 @@
+# Example configuration for {{ cookiecutter.command_name }}.
+#
+# Copy this to `{{ cookiecutter.command_name }}.toml` in the directory you run from, or point at it
+# with `--config` or the `{{ cookiecutter.module_name.upper() }}_CONFIG` environment variable.
+# Every key here can also be set as `{{ cookiecutter.module_name.upper() }}_<KEY>` in the environment,
+# or as a flag on the command line, which wins over both.
+
+target_epsg = {{ cookiecutter.default_epsg }}
+output_dir = "output"
+workers = 4
+overwrite = false
+precision = 6
+fail_fast = false
+log_level = "info"

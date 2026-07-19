@@ -1,0 +1,109 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "{{ cookiecutter.project_slug }}"
+version = "{{ cookiecutter.version }}"
+description = "{{ cookiecutter.project_description }}"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "{{ cookiecutter.open_source_license }}" }
+authors = [{ name = "{{ cookiecutter.author_name }}", email = "{{ cookiecutter.author_email }}" }]
+keywords = ["cli", "geospatial", "gis", "typer", "batch-processing"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: GIS",
+]
+dependencies = [
+    "typer>=0.12",
+    "rich>=13.7",
+    "pydantic>=2.7",
+]
+
+[project.optional-dependencies]
+{%- if cookiecutter.use_rasterio == 'yes' %}
+raster = ["rasterio>=1.4"]
+{%- endif %}
+{%- if cookiecutter.use_pyogrio == 'yes' %}
+vector = ["pyogrio>=0.9"]
+{%- endif %}
+{%- if cookiecutter.use_shapely == 'yes' %}
+geometry = ["shapely>=2.0"]
+{%- endif %}
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.6",
+    "mypy>=1.11",
+{%- if cookiecutter.use_rasterio == 'yes' %}
+    "rasterio>=1.4",
+{%- endif %}
+{%- if cookiecutter.use_pyogrio == 'yes' %}
+    "pyogrio>=0.9",
+{%- endif %}
+{%- if cookiecutter.use_shapely == 'yes' %}
+    "shapely>=2.0",
+{%- endif %}
+]
+
+[project.scripts]
+{{ cookiecutter.command_name }} = "{{ cookiecutter.module_name }}.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/{{ cookiecutter.github_owner }}/{{ cookiecutter.project_slug }}"
+Issues = "https://github.com/{{ cookiecutter.github_owner }}/{{ cookiecutter.project_slug }}/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/{{ cookiecutter.module_name }}"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+addopts = "-ra --strict-markers --strict-config"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4", "SIM", "RUF", "D"]
+ignore = [
+    "D203",  # incompatible with D211, which we keep
+    "D213",  # incompatible with D212, which we keep
+    "E501",  # line length is handled by the formatter
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["D100", "D103", "D104"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.mypy]
+# No python_version pin: mypy then checks against the interpreter it runs under, which
+# is what the CI matrix varies. Pinning it here makes third-party stubs that use newer
+# syntax (numpy's, for one) fail to parse on the newer interpreters.
+files = ["src", "tests"]
+strict = true
+warn_unreachable = true
+disallow_untyped_defs = true
+
+[[tool.mypy.overrides]]
+# Optional GIS dependencies ship incomplete or absent type information. Scoping the
+# exemption to these modules keeps strict checking everywhere else.
+module = ["rasterio.*", "pyogrio.*", "shapely.*"]
+ignore_missing_imports = true
+
+[tool.coverage.run]
+source = ["src/{{ cookiecutter.module_name }}"]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = ["pragma: no cover", "if TYPE_CHECKING:", "raise NotImplementedError"]

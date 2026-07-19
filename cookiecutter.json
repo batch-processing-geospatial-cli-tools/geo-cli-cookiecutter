@@ -1,0 +1,32 @@
+{
+  "project_name": "Geo Tool",
+  "project_slug": "{{ cookiecutter.project_name|lower|replace(' ', '-')|replace('_', '-') }}",
+  "module_name": "{{ cookiecutter.project_slug|lower|replace('-', '_') }}",
+  "command_name": "{{ cookiecutter.project_slug }}",
+  "project_description": "A geospatial command-line tool.",
+  "author_name": "Your Name",
+  "author_email": "you@example.com",
+  "github_owner": "your-github-username",
+  "version": "0.1.0",
+  "copyright_year": "2026",
+  "default_epsg": "4326",
+  "use_rasterio": ["no", "yes"],
+  "use_pyogrio": ["no", "yes"],
+  "use_shapely": ["no", "yes"],
+  "open_source_license": ["MIT", "Apache-2.0", "BSD-3-Clause", "Proprietary"],
+  "init_git_repo": ["yes", "no"],
+  "__prompts__": {
+    "project_name": "Human-readable project name",
+    "project_slug": "Directory and distribution name (kebab-case)",
+    "module_name": "Importable package name under src/ (snake_case)",
+    "command_name": "Name of the installed console script",
+    "project_description": "One-sentence description",
+    "copyright_year": "Year for the license copyright line",
+    "default_epsg": "Default target CRS as a bare EPSG code",
+    "use_rasterio": "Include a rasterio-backed 'raster' subcommand?",
+    "use_pyogrio": "Include a pyogrio-backed 'vector' subcommand?",
+    "use_shapely": "Include a shapely-backed 'geometry' subcommand?",
+    "open_source_license": "License for the generated project",
+    "init_git_repo": "Run 'git init' in the generated project?"
+  }
+}

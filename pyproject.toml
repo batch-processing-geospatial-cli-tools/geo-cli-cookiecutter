@@ -1,0 +1,65 @@
+[project]
+name = "geo-cli-cookiecutter"
+version = "0.1.0"
+description = "Cookiecutter template for production-ready geospatial Python CLI tools"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "batch-processing.com" }]
+keywords = ["cookiecutter", "template", "cli", "typer", "geospatial", "gis"]
+dependencies = ["cookiecutter>=2.6"]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-xdist>=3.6",
+    "ruff>=0.6",
+    "mypy>=1.11",
+]
+
+[project.urls]
+Homepage = "https://github.com/batch-processing-geospatial-cli-tools/geo-cli-cookiecutter"
+Documentation = "https://www.batch-processing.com"
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+addopts = "-ra --strict-markers --strict-config"
+markers = [
+    "slow: bakes a project into a real virtualenv and runs its suite (needs network)",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+# The template directory holds Jinja source, not Python. Linting it is meaningless — the
+# baked output is what has to be clean, and the slow test runs ruff over exactly that.
+# Matched on a distinctive fragment of the name: ruff's glob syntax treats braces as
+# alternation, so the literal "{{cookiecutter.project_slug}}" never matches, and a
+# pattern as loose as "*cookiecutter*" would exclude this repository's own root too.
+extend-exclude = ["*project_slug*"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4", "SIM", "RUF", "D"]
+ignore = ["D203", "D213", "E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["D100", "D103", "D104"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.mypy]
+python_version = "3.11"
+files = ["hooks", "tests"]
+strict = true
+warn_unreachable = true
+# Same reason as the ruff exclusion: the template tree is not importable Python.
+exclude = ["\\{\\{cookiecutter\\.project_slug\\}\\}"]
+
+[[tool.mypy.overrides]]
+module = ["cookiecutter.*"]
+ignore_missing_imports = true
